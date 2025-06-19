@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Vue3 + TypeScript 开发规范 [P0]
+
+## 技术栈说明
+- **框架**: Vue 3 (Composition API + `<script setup>`)  
+- **语言**: TypeScript (禁止 `any` 类型)  
+- **包管理**: Yarn (所有依赖操作必须使用 `yarn` 命令)  
+- **核心库**: Pinia (状态管理), Vue Router (路由), Vite (构建)  
+
+## 组件规范
+1. **文件结构**  
+   ```vue
+   <!-- 顺序: script → template → style -->
+   <script setup lang="ts">
+   // Props 类型定义（禁止 any）
+   interface Props {
+     title: string;
+     count?: number;
+   }
+   const props = defineProps<Props>();
+   </script>
+
+   
+   <template>
+     <!-- 根元素单节点 -->
+     <div class="container">{{ title }}</div>
+
+   </template>
+
+   
+   <style scoped>
+   /* 仅用 Scoped CSS */
+   .container { padding: 1rem; }
+   </style>
