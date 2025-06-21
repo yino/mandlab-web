@@ -173,7 +173,7 @@ const agreed = ref(false);
   color: #3dbc79;
   font-size: 2.1rem;
   font-style: italic;
-  font-weight: 900;
+  font-weight: bolder; 
   text-align: center;
   letter-spacing: 0.12em;
   margin-bottom: 0.7rem;
@@ -249,7 +249,7 @@ const agreed = ref(false);
 /* 邀请码 */
 .inviteCode-form {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.0rem;
 }
 .inviteCode-prompt {
   position: absolute;
