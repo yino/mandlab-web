@@ -16,7 +16,7 @@
                 <el-input v-model="inviteCode" placeholder="请输入邀请码" />
                 <div class="inviteCode-prompt">
                   没有邀请码？
-                  <a href="#" class="agreement-link">马上获取</a>
+                  <el-link type="primary" @click="openDialog" :underline="false">马上获取</el-link>
                 </div>
               </el-form-item>
               <div>
@@ -34,13 +34,21 @@
               </div>
               <el-form-item class="captcha-row-form">
                 <el-row :gutter="28" class="captcha-row-form-item">
-                  <el-col :span="19">
+                  <el-col :span="18">
                     <el-input v-model="captcha" placeholder="请输入验证码" />
                   </el-col>
                   <el-col :span="2">
-                    <el-button class="captcha-btn" type="primary" plain
-                      >发送验证码</el-button
+                    <el-button
+                      class="captcha-btn"
+                      type="primary"
+                      plain
+                      :disabled="isCountingDown"
+                      @click="sendCaptcha"
                     >
+                      {{
+                        isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码"
+                      }}
+                    </el-button>
                   </el-col>
                 </el-row>
               </el-form-item>
@@ -59,9 +67,7 @@
                 </el-col>
               </el-form-item>
               <el-form-item>
-                <el-button class="login-btn" type="success" size="medium"
-                  >登录</el-button
-                >
+                <el-button class="login-btn" type="success" size="medium">登录</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -72,15 +78,54 @@
         </div>
       </div>
     </div>
+
+    <!-- 信息表单弹窗 -->
+    <FormDialog v-model:visible="dialogVisible" @submit="handleSubmit" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onUnmounted } from "vue";
+import FormDialog from "../components/FormDialog.vue";
+
 const inviteCode = ref("");
 const phone = ref("");
 const captcha = ref("");
 const agreed = ref(false);
+const dialogVisible = ref(false);
+
+const isCountingDown = ref(false);
+const countdownSeconds = ref(60);
+let timer: number | undefined;
+// 发送验证码
+const sendCaptcha = () => {
+  if (isCountingDown.value) {
+    return;
+  }
+  isCountingDown.value = true;
+  countdownSeconds.value = 60;
+
+  timer = setInterval(() => {
+    countdownSeconds.value -= 1;
+    if (countdownSeconds.value <= 0) {
+      clearInterval(timer as number);
+      isCountingDown.value = false;
+    }
+  }, 1000);
+};
+// 信息登记表单
+const handleSubmit = (formData: any) => {
+  console.log("Form submitted:", formData);
+  // 这里可以添加表单提交的逻辑
+};
+const openDialog = () => {
+  dialogVisible.value = true;
+};
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer);
+  }
+});
 </script>
 
 <style scoped>
@@ -173,7 +218,7 @@ const agreed = ref(false);
   color: #3dbc79;
   font-size: 2.1rem;
   font-style: italic;
-  font-weight: bolder; 
+  font-weight: bolder;
   text-align: center;
   letter-spacing: 0.12em;
   margin-bottom: 0.7rem;
@@ -249,7 +294,7 @@ const agreed = ref(false);
 /* 邀请码 */
 .inviteCode-form {
   position: relative;
-  margin-bottom: 1.0rem;
+  margin-bottom: 1rem;
 }
 .inviteCode-prompt {
   position: absolute;

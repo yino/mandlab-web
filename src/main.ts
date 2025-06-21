@@ -4,11 +4,13 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from './components/Login.vue';
+import Login from './pages/Login.vue';
+import FormPage from './pages/FormPage.vue';
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/:pathMatch(.*)*', redirect: '/login' },
+  { path: '/form', component: FormPage },
+  { path: '/', redirect: '/login' },
 ];
 const router = createRouter({
   history: createWebHistory(),
