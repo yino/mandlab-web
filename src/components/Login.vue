@@ -59,7 +59,7 @@
                 </el-col>
               </el-form-item>
               <el-form-item>
-                <el-button class="login-btn" type="success" round block
+                <el-button class="login-btn" type="success" size="medium"
                   >登录</el-button
                 >
               </el-form-item>
@@ -209,7 +209,7 @@ const agreed = ref(false);
 }
 /*  协议弹窗相关 */
 .agreement-group {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 .agreement-text {
   font-size: 0.8rem;
@@ -228,7 +228,7 @@ const agreed = ref(false);
 }
 .login-btn {
   width: 100%;
-  height: 2rem;
+  height: 3rem;
   font-size: 1rem;
   font-weight: bold;
   border-radius: 0.4rem;
