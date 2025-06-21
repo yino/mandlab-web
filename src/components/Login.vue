@@ -11,9 +11,13 @@
           <div>
             <h1 class="login-title">Mandlab</h1>
             <el-form>
-              <el-form-item>
+              <el-form-item class="inviteCode-form">
                 <label class="input-label">邀请码</label>
                 <el-input v-model="inviteCode" placeholder="请输入邀请码" />
+                <div class="inviteCode-prompt">
+                  没有邀请码？
+                  <a href="#" class="agreement-link">马上获取</a>
+                </div>
               </el-form-item>
               <div>
                 <!-- <span class="invite-tip">
@@ -241,12 +245,24 @@ const agreed = ref(false);
 .el-form-item {
   margin-bottom: 0.5rem;
 }
+
+/* 邀请码 */
+.inviteCode-form {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.inviteCode-prompt {
+  position: absolute;
+  right: 0;
+  bottom: -2rem;
+}
+
 /* 验证码模块 */
-.captcha-row-form .captcha-row-form-item  {
+.captcha-row-form .captcha-row-form-item {
   width: 100%;
 }
 
-/* 响应式 */
+/* 响应式相关 */
 @media (max-width: 900px) {
   .login-box {
     min-width: 60vw;
