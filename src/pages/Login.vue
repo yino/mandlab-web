@@ -16,14 +16,12 @@
                 <el-input v-model="inviteCode" placeholder="请输入邀请码" />
                 <div class="inviteCode-prompt">
                   没有邀请码？
-                  <el-link type="primary" @click="openDialog" :underline="false">马上获取</el-link>
+                  <el-link type="primary" @click="openDialog" :underline="false"
+                    >马上获取</el-link
+                  >
                 </div>
               </el-form-item>
-              <div>
-                <!-- <span class="invite-tip">
-                没有邀请码？<a class="invite-link" href="#">联系我们</a>
-              </span> -->
-              </div>
+              <div></div>
               <el-form-item>
                 <label class="input-label">手机号码</label>
                 <el-input v-model="phone" placeholder="请输入手机号码" />
@@ -46,7 +44,9 @@
                       @click="sendCaptcha"
                     >
                       {{
-                        isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码"
+                        isCountingDown
+                          ? `重新发送(${countdownSeconds}s)`
+                          : "发送验证码"
                       }}
                     </el-button>
                   </el-col>
@@ -59,15 +59,27 @@
                   <el-checkbox v-model="agreed">
                     <span class="agreement-text">
                       已阅读并同意Mandlab
-                      <a class="agreement-link" href="#">使用协议</a>
+                      <el-link
+                        type="primary"
+                        @click="showAgreement"
+                        :underline="false"
+                        >使用协议</el-link
+                      >
                       和
-                      <a class="agreement-link" href="#">隐私政策</a>
+                      <el-link
+                        type="primary"
+                        @click="showPrivacy"
+                        :underline="false"
+                        >隐私政策</el-link
+                      >
                     </span>
                   </el-checkbox>
                 </el-col>
               </el-form-item>
               <el-form-item>
-                <el-button class="login-btn" type="success" size="medium">登录</el-button>
+                <el-button class="login-btn" type="success" size="medium"
+                  >登录</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -81,12 +93,16 @@
 
     <!-- 信息表单弹窗 -->
     <FormDialog v-model:visible="dialogVisible" @submit="handleSubmit" />
+
+    <!-- 协议弹窗 -->
+    <AgreementDialog v-model:visible="agreementVisible" :type="agreementType" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onUnmounted } from "vue";
 import FormDialog from "../components/FormDialog.vue";
+import AgreementDialog from "../components/agreement.vue";
 
 const inviteCode = ref("");
 const phone = ref("");
@@ -94,9 +110,14 @@ const captcha = ref("");
 const agreed = ref(false);
 const dialogVisible = ref(false);
 
+// 协议弹窗相关
+const agreementVisible = ref(false);
+const agreementType = ref<"agreement" | "privacy">("agreement");
+
 const isCountingDown = ref(false);
 const countdownSeconds = ref(60);
 let timer: number | undefined;
+
 // 发送验证码
 const sendCaptcha = () => {
   if (isCountingDown.value) {
@@ -113,14 +134,29 @@ const sendCaptcha = () => {
     }
   }, 1000);
 };
+
 // 信息登记表单
 const handleSubmit = (formData: any) => {
   console.log("Form submitted:", formData);
   // 这里可以添加表单提交的逻辑
 };
+
 const openDialog = () => {
   dialogVisible.value = true;
 };
+
+// 显示使用协议
+const showAgreement = () => {
+  agreementType.value = "agreement";
+  agreementVisible.value = true;
+};
+
+// 显示隐私政策
+const showPrivacy = () => {
+  agreementType.value = "privacy";
+  agreementVisible.value = true;
+};
+
 onUnmounted(() => {
   if (timer) {
     clearInterval(timer);
@@ -226,7 +262,7 @@ onUnmounted(() => {
 .input-label {
   font-size: 0.8rem;
   color: #222;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0;
   display: block;
 }
 .el-input {

@@ -5,11 +5,9 @@ import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from './pages/Login.vue';
-import FormPage from './pages/FormPage.vue';
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/form', component: FormPage },
   { path: '/', redirect: '/login' },
 ];
 const router = createRouter({
