@@ -11,7 +11,7 @@
           <div>
             <h1 class="login-title">Mandlab</h1>
             <el-form>
-              <el-form-item class="inviteCode-form">
+              <el-form-item class="inviteCode-form" v-if="registerOk">
                 <label class="input-label">邀请码</label>
                 <el-input v-model="inviteCode" placeholder="请输入邀请码" />
                 <div class="inviteCode-prompt">
@@ -78,7 +78,7 @@
               </el-form-item>
               <el-form-item>
                 <el-button class="login-btn" type="success" size="medium"
-                  >登录</el-button
+                  >{{loginBtnTxt}}</el-button
                 >
               </el-form-item>
             </el-form>
@@ -100,16 +100,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted, onMounted } from "vue";
 import FormDialog from "../components/FormDialog.vue";
 import AgreementDialog from "../components/agreement.vue";
 
 const inviteCode = ref("");
+const registerOk = ref(true);
 const phone = ref("");
 const captcha = ref("");
 const agreed = ref(false);
 const dialogVisible = ref(false);
-
+const loginBtnTxt = ref("登录")
 // 协议弹窗相关
 const agreementVisible = ref(false);
 const agreementType = ref<"agreement" | "privacy">("agreement");
@@ -117,6 +118,31 @@ const agreementType = ref<"agreement" | "privacy">("agreement");
 const isCountingDown = ref(false);
 const countdownSeconds = ref(60);
 let timer: number | undefined;
+
+// 获取URL参数并初始化inviteCode
+const initInviteCode = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const inviteCodeParam = urlParams.get("inviteCode");
+  const formType = urlParams.get("formType");
+
+  // 根据formType参数设置registerOk
+  if (formType === "register") {
+    registerOk.value = true;
+    loginBtnTxt.value = "注册"
+  } else {
+    registerOk.value = false;
+  }
+
+  // 如果有邀请码参数，则显示邀请码行并赋值
+  if (inviteCodeParam) {
+     inviteCode.value = inviteCodeParam;
+  }
+};
+
+// 页面初始化时获取URL参数
+onMounted(() => {
+  initInviteCode();
+});
 
 // 发送验证码
 const sendCaptcha = () => {
