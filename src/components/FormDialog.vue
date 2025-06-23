@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 import { Upload } from "@element-plus/icons-vue";
-
+import { applyInviteCode, uploadInviteFile } from "../api/api";
 const props = defineProps<{
   visible: boolean;
 }>();
@@ -23,9 +24,7 @@ const form = ref({
   badge: "",
 });
 
-const phoneLabel = ref(
-  "联系电话* <small>(邀请码将以短信的形式发送到您的手机)</small>"
-);
+const phoneLabel = ref("联系电话* <small>(邀请码将以短信的形式发送到您的手机)</small>");
 
 const cardLabel = ref("名片<small>(提供名片我们会优先审核哦)</small>");
 
@@ -46,17 +45,28 @@ const rules: FormRules = {
 const handleClose = () => {
   emit("update:visible", false);
 };
-
+// 表单提交
 const handleSubmit = async () => {
   if (!formRef.value) return;
-
-  await formRef.value.validate((valid) => {
-    if (valid) {
-      emit("submit", form.value);
-      handleClose();
-      formRef.value?.resetFields();
-    }
-  });
+  const valid = await formRef.value.validate();
+  if (!valid) return;
+  try {
+    let resp = await applyInviteCode({
+      address: form.value.address,
+      applicant_name: form.value.name,
+      company_name: form.value.companyName,
+      phone: form.value.phone,
+      email: form.value.email,
+      position: form.value.position,
+      business_card_file_id: form.value.badge,
+    });
+    console.log("resp", resp);
+    ElMessage.success(resp.data.message);
+    // 处理成功逻辑
+  } catch (err: any) {
+    ElMessage.error(err?.response?.data?.errors?.[0] || "申请失败");
+    return false;
+  }
 };
 
 const triggerFileUpload = () => {
@@ -67,20 +77,26 @@ const triggerFileUpload = () => {
   }
 };
 
-const handleUploadSuccess = (response: any, uploadFile: UploadFile) => {
-  form.value.badge = response.url;
-  badgeFileName.value = uploadFile.name;
+const handleUploadSuccess = async (response: any, uploadFile: File) => {
+  // 这里不直接用 response，而是用自定义上传逻辑
+  // response 是后端返回的 { file_id, msg }
+  form.value.badge = response.file_id;
+  fileDisplayName.value = uploadFile.name;
+  ElMessage.success(response.msg || "上传成功");
 };
 
-const handleFileChange = (file: any) => {
+const handleFileChange = async (file: any) => {
   if (file) {
     fileDisplayName.value = file.name;
-    // 自动上传文件
-    const formData = new FormData();
-    formData.append("file", file.raw);
-
-    // 这里可以添加实际的上传逻辑，或者使用Element Plus的自动上传
-    // 如果使用自动上传，可以删除这段代码
+    try {
+      const resp = await uploadInviteFile({
+        file: file.raw,
+        purpose: "InviteApplication",
+      });
+      await handleUploadSuccess(resp.data, file.raw);
+    } catch (err: any) {
+      ElMessage.error(err?.response?.data?.msg || "上传失败");
+    }
   }
 };
 </script>
@@ -148,11 +164,9 @@ const handleFileChange = (file: any) => {
           <el-upload
             ref="uploadRef"
             class="hidden-upload"
-            action="/api/upload"
-            :on-success="handleUploadSuccess"
-            :on-change="handleFileChange"
+            :auto-upload="false"
             :show-file-list="false"
-            :auto-upload="true"
+            :on-change="handleFileChange"
           >
           </el-upload>
         </div>
@@ -166,9 +180,7 @@ const handleFileChange = (file: any) => {
       <el-row :gutter="20">
         <el-col :span="2"></el-col>
         <el-col :span="10">
-          <el-button @click="handleClose" style="width: 100%"
-            >取消</el-button
-          ></el-col
+          <el-button @click="handleClose" style="width: 100%">取消</el-button></el-col
         >
         <el-col :span="10"
           ><el-button type="success" @click="handleSubmit" style="width: 100%"

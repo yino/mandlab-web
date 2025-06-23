@@ -98,8 +98,7 @@
 <script setup lang="ts">
 import { ref, onUnmounted, onMounted, watch } from "vue";
 import { login, sendCode, CodeInputBody } from "../api/api";
-import { ElMessage } from "element-plus";
-import type { FormRules } from "element-plus";
+import type { FormRules, ElMessage } from "element-plus";
 
 // 页面组件相关
 import FormDialog from "../components/FormDialog.vue";
@@ -182,12 +181,6 @@ const sendCaptcha = async () => {
       isCountingDown.value = false;
     }
   }, 1000);
-};
-
-// 信息登记表单
-const handleSubmit = (formData: any) => {
-  console.log("Form submitted:", formData);
-  // 这里可以添加表单提交的逻辑
 };
 
 const openDialog = () => {

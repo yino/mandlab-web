@@ -111,6 +111,34 @@ export interface IndustryListBody {
   total: number;
 }
 
+// 申请邀请码
+export interface ApplyInputBody {
+  address: string;
+  applicant_name: string;
+  business_card_file_id: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  position: string;
+}
+
+export interface ApplyOutputBody {
+  message: string;
+  [key: string]: any;
+}
+
+export interface UploadFileBody {
+  file_id: string;
+  msg: string;
+  [key: string]: any;
+}
+
+export interface UploadFileInput {
+  file: File;
+  hash?: string;
+  purpose?: string;
+}
+
 // ================= axios 实例 =================
 
 const api = axios.create({
@@ -151,6 +179,11 @@ export function sendCode(data: CodeInputBody) {
   return api.post<CodeOutputBody>('/v1/auth/code', data);
 }
 
+// 申请邀请码
+export function applyInviteCode(data: ApplyInputBody) {
+  return api.post<ApplyOutputBody>('/v1/auth/apply', data);
+}
+
 // 地区
 export function getProvinces() {
   return api.get<ProvinceListBody>('/v1/common/provinces');
@@ -178,6 +211,16 @@ export function getIndustries(params?: {
   keyword?: string;
 }) {
   return api.get<IndustryListBody>('/v1/industry', { params });
+}
+
+export function uploadInviteFile(data: UploadFileInput) {
+  const formData = new FormData();
+  formData.append('file', data.file);
+  if (data.hash !== undefined) formData.append('hash', data.hash);
+  if (data.purpose !== undefined) formData.append('purpose', data.purpose);
+  return api.post<UploadFileBody>('/v1/auth/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 }
 
 // ... 其他接口可按需补充 ...
