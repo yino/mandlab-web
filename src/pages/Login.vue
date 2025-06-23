@@ -44,9 +44,7 @@
                       @click="sendCaptcha"
                     >
                       {{
-                        isCountingDown
-                          ? `重新发送(${countdownSeconds}s)`
-                          : "发送验证码"
+                        isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码"
                       }}
                     </el-button>
                   </el-col>
@@ -59,17 +57,11 @@
                   <el-checkbox v-model="agreed">
                     <span class="agreement-text">
                       已阅读并同意Mandlab
-                      <el-link
-                        type="primary"
-                        @click="showAgreement"
-                        :underline="false"
+                      <el-link type="primary" @click="showAgreement" :underline="false"
                         >使用协议</el-link
                       >
                       和
-                      <el-link
-                        type="primary"
-                        @click="showPrivacy"
-                        :underline="false"
+                      <el-link type="primary" @click="showPrivacy" :underline="false"
                         >隐私政策</el-link
                       >
                     </span>
@@ -77,8 +69,12 @@
                 </el-col>
               </el-form-item>
               <el-form-item>
-                <el-button class="login-btn" type="success" size="medium"
-                  >{{loginBtnTxt}}</el-button
+                <el-button
+                  class="login-btn"
+                  type="success"
+                  size="medium"
+                  @click="loginEvent"
+                  >{{ loginBtnTxt }}</el-button
                 >
               </el-form-item>
             </el-form>
@@ -100,17 +96,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted, onMounted } from "vue";
+import { ref, onUnmounted, onMounted, watch } from "vue";
+import { login, sendCode, CodeInputBody } from "../api/api";
+import { ElMessage } from "element-plus";
+import type { FormRules } from "element-plus";
+
+// 页面组件相关
 import FormDialog from "../components/FormDialog.vue";
 import AgreementDialog from "../components/agreement.vue";
 
 const inviteCode = ref("");
 const registerOk = ref(true);
-const phone = ref("");
-const captcha = ref("");
+const phone = ref("15829090357");
+const captcha = ref("123456");
 const agreed = ref(false);
 const dialogVisible = ref(false);
-const loginBtnTxt = ref("登录")
+const loginBtnTxt = ref("登录");
 // 协议弹窗相关
 const agreementVisible = ref(false);
 const agreementType = ref<"agreement" | "privacy">("agreement");
@@ -128,14 +129,14 @@ const initInviteCode = () => {
   // 根据formType参数设置registerOk
   if (formType === "register") {
     registerOk.value = true;
-    loginBtnTxt.value = "注册"
+    loginBtnTxt.value = "注册";
   } else {
     registerOk.value = false;
   }
 
   // 如果有邀请码参数，则显示邀请码行并赋值
   if (inviteCodeParam) {
-     inviteCode.value = inviteCodeParam;
+    inviteCode.value = inviteCodeParam;
   }
 };
 
@@ -145,9 +146,31 @@ onMounted(() => {
 });
 
 // 发送验证码
-const sendCaptcha = () => {
+const sendCaptcha = async () => {
   if (isCountingDown.value) {
     return;
+  }
+  if (agreed.value === false) {
+    ElMessage.warning("请先阅读并同意使用协议和隐私政策");
+    return false;
+  }
+  // 获取手机号
+
+  if (phone.value.length <= 0) {
+    ElMessage.warning("请输入手机号");
+    return;
+  }
+
+  let data: CodeInputBody = {
+    phone: phone.value,
+    purpose: "login",
+  };
+  try {
+    const resp = await sendCode(data);
+    // 这里 resp.data 就是 { message: string }
+    ElMessage.success(resp.data.message);
+  } catch (err) {
+    ElMessage.error("发送验证码失败");
   }
   isCountingDown.value = true;
   countdownSeconds.value = 60;
@@ -181,6 +204,55 @@ const showAgreement = () => {
 const showPrivacy = () => {
   agreementType.value = "privacy";
   agreementVisible.value = true;
+};
+
+// 登录事件
+const loginEvent = async () => {
+  if (!loginValidate()) {
+    return;
+  }
+  try {
+    if (!registerOk.value) {
+      const resp = await login({
+        phone: phone.value,
+        verification_code: captcha.value,
+        invite_code: inviteCode.value || undefined,
+      });
+      ElMessage.success("登录成功");
+    }
+    // 处理登录成功后的跳转等
+  } catch (err: any) {
+    registerOk.value = true;
+    console.log(err.response?.data.errors[0]);
+    ElMessage.error(err?.response?.data?.errors[0] || "登录失败");
+  }
+};
+const loginValidate = () => {
+  if (agreed.value === false) {
+    ElMessage.warning("请先阅读并同意使用协议和隐私政策");
+    return false;
+  }
+  if (phone.value.length === 0) {
+    ElMessage.warning("请输入手机号码");
+    return false;
+  }
+
+  let phonePattern = new RegExp(/^1[3-9]\d{9}$/);
+  if (!phonePattern.test(phone.value)) {
+    ElMessage.warning("手机号格式有误");
+    return false;
+  }
+
+  if (captcha.value.length === 0) {
+    ElMessage.warning("请输入验证码");
+    return false;
+  }
+  // 注册时需要邀请码
+  if (registerOk.value && inviteCode.value.length === 0) {
+    ElMessage.warning("请输入邀请码");
+    return false;
+  }
+  return true;
 };
 
 onUnmounted(() => {
