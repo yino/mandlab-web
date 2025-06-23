@@ -98,7 +98,8 @@
 <script setup lang="ts">
 import { ref, onUnmounted, onMounted, watch } from "vue";
 import { login, sendCode, CodeInputBody } from "../api/api";
-import type { FormRules, ElMessage } from "element-plus";
+import type { FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 
 // 页面组件相关
 import FormDialog from "../components/FormDialog.vue";
