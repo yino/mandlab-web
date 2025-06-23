@@ -107,8 +107,8 @@ import AgreementDialog from "../components/agreement.vue";
 
 const inviteCode = ref("");
 const registerOk = ref(true);
-const phone = ref("");
-const captcha = ref("");
+const phone = ref("15829090357");
+const captcha = ref("123456");
 const agreed = ref(false);
 const dialogVisible = ref(false);
 const loginBtnTxt = ref("登录");
@@ -168,7 +168,7 @@ const sendCaptcha = async () => {
   try {
     const resp = await sendCode(data);
     // 这里 resp.data 就是 { message: string }
-    ElMessage.success(resp.data.message);
+    ElMessage.success(resp.data?.msg);
   } catch (err) {
     ElMessage.error("发送验证码失败");
   }
@@ -212,11 +212,9 @@ const loginEvent = async () => {
       invite_code: inviteCode.value || undefined,
     });
     ElMessage.success("登录成功");
-    // 处理登录成功后的跳转等
+    // TODO：处理登录成功后的跳转等
   } catch (err: any) {
-    registerOk.value = true;
-    console.log(err.response?.data.errors[0]);
-    ElMessage.error(err?.response?.data?.errors[0] || "登录失败");
+    loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
 };
 const loginValidate = () => {
@@ -245,6 +243,26 @@ const loginValidate = () => {
     return false;
   }
   return true;
+};
+const loginErrorRespValidate = (code: number, message: string) => {
+  if (code === 1001) {
+    ElMessage.warning("邀请码无效");
+  } else if (code === 1002) {
+    ElMessage.warning("登录失败");
+  } else if (code === 1003) {
+    ElMessage.warning("令牌生成失败");
+  } else if (code === 1004) {
+    ElMessage.warning("用户创建失败");
+  } else if (code === 1005) {
+    ElMessage.warning("用户不存在");
+    registerOk.value = true;
+  } else if (code === 1006) {
+    ElMessage.warning("验证码已过期");
+  } else if (code === 1007) {
+    ElMessage.warning("验证码无效");
+  } else {
+    ElMessage.warning(message);
+  }
 };
 
 onUnmounted(() => {
