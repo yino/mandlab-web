@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { ElScrollbar } from "element-plus"; // 引入 ElScrollbar
 
 const props = defineProps<{
   visible: boolean;
@@ -110,24 +111,19 @@ const privacyContent = `
     <template #title>
       <div class="custom-dialog-title">Mandle {{ dialogTitle }}</div>
     </template>
-
-    <div class="policy-content" v-html="dialogContent"></div>
-
-    <template #footer>
+    <!-- 用 el-scrollbar 包裹内容部分 -->
+    <el-scrollbar :height="500">
+      <div class="policy-content" v-html="dialogContent"></div>
+    </el-scrollbar>
+  <!--  <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">关闭</el-button>
       </span>
-    </template>
+    </template> -->
   </el-dialog>
 </template>
 
 <style scoped>
-.policy-dialog :deep(.el-dialog__body) {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding: 20px;
-}
-
 .policy-content {
   line-height: 1.6;
   color: #333;
@@ -171,5 +167,10 @@ const privacyContent = `
   font-weight: bolder;
   font-size: 1.2rem;
   color: #333333;
+}
+
+/* 设置滚动条样式 */
+:deep(.el-scrollbar__bar) {
+  width: 8px;
 }
 </style>
