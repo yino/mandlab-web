@@ -9,7 +9,7 @@
         <img src="/public/logo.png" class="logo" />
         <h1 class="login-title">Mandlab</h1>
         <el-form style="padding: 1.6rem;">
-          <el-form-item class="inviteCode-form" v-if="registerOk">
+          <el-form-item class="inviteCode-form" >
             <label class="input-label">邀请码</label>
             <el-input v-model="inviteCode" placeholder="请输入邀请码" />
             <div class="inviteCode-prompt">
@@ -21,10 +21,9 @@
           
           <el-form-item style="margin-left: 0.5rem;">
             <label class="input-label">手机号码</label>
-            <div id="phoneErrorTip" class="phone-error-tip"></div>
+            <div id="phoneErrorTip" class="phone-error-tip">手机号格式有误</div>
             <el-input v-model="phone" placeholder="请输入手机号码" @blur="validatePhone" @input="validatePhoneInput" />
             <div :class="['captcha-btn-container', { disabled: !isValidPhone }]" style="margin-top: 1rem;">
-          
             </div>
           </el-form-item>
 
@@ -33,22 +32,22 @@
             <div id="captchaErrorTip" class="phone-error-tip" style="margin-left: -8rem;"></div>
             <el-row :gutter="28" class="captcha-row-form-item">
               <el-col :span="18">
-                <el-input v-model="captcha" placeholder="请输入验证码" @blur="validateCaptcha" />
+                <el-input v-model="captcha" placeholder="请输入验证码" />
               </el-col>
               <el-col :span="2">
-             <el-button
-               class="captcha-btn"
-               type="primary"
-               plain
-               :disabled="isCountingDown || !isValidPhone"
-               @click="sendCaptcha"
-             >
-               {{
-                 isCountingDown
-                   ? `重新发送(${countdownSeconds}s)`
-                   : "发送验证码"
-               }}
-             </el-button>
+                <el-button
+                  class="captcha-btn"
+                  type="primary"
+                  plain
+                  :disabled="isCountingDown || !isValidPhone"
+                  @click="sendCaptcha"
+                >
+                  {{
+                    isCountingDown
+                      ? `重新发送(${countdownSeconds}s)`
+                      : "发送验证码"
+                  }}
+                </el-button>
               </el-col>
             </el-row>
           </el-form-item>
@@ -77,8 +76,8 @@
             </el-col>
           </el-form-item>
 
-          <el-button class="login-btn" type="success" size="medium" @click="handleLogin">
-            {{ loginBtnTxt }}
+          <el-button class="login-btn" type="success" size="medium" @click="loginEvent">
+            {{loginBtnTxt}}
           </el-button>
         </el-form>
       </div>
@@ -93,19 +92,16 @@
   </div>
 </template>
 
-// 在你的 Vue 组件中
 <script setup lang="ts">
-import { ref, h, onUnmounted, onMounted } from 'vue';
-import { useRouter } from 'vue-router'; // 导入路由
-import { ElMessage } from 'element-plus';
-import NavBar from '../components/NavBar.vue';
-import FormDialog from '../components/FormDialog.vue';
-import AgreementDialog from '../components/agreement.vue';
+import { ref, onUnmounted, onMounted } from "vue";
+import { login, sendCode, CodeInputBody } from "../api/api";
+import { ElMessage } from "element-plus";
 
-// 获取路由实例
-const router = useRouter();
+// 页面组件相关
+import FormDialog from "../components/MFormDialog.vue";
+import NavBar from"../components/NavBar.vue"
+import AgreementDialog from "../components/Magreement.vue";
 
-// 基础变量
 const inviteCode = ref("");
 const registerOk = ref(true);
 const phone = ref("");
@@ -113,17 +109,16 @@ const captcha = ref("");
 const agreed = ref(false);
 const dialogVisible = ref(false);
 const loginBtnTxt = ref("登录");
-const isValidPhone = ref(false);
-const isValidCaptcha = ref(false);
-
 // 协议弹窗相关
 const agreementVisible = ref(false);
 const agreementType = ref<"agreement" | "privacy">("agreement");
 
-// 验证码相关
 const isCountingDown = ref(false);
 const countdownSeconds = ref(60);
 let timer: number | undefined;
+
+// 是否手机号有效
+const isValidPhone = ref(false);
 
 // 获取URL参数并初始化inviteCode
 const initInviteCode = () => {
@@ -131,6 +126,7 @@ const initInviteCode = () => {
   const inviteCodeParam = urlParams.get("inviteCode");
   const formType = urlParams.get("formType");
 
+  // 根据formType参数设置registerOk
   if (formType === "register") {
     registerOk.value = true;
     loginBtnTxt.value = "注册";
@@ -138,84 +134,64 @@ const initInviteCode = () => {
     registerOk.value = false;
   }
 
+  // 如果有邀请码参数，则显示邀请码行并赋值
   if (inviteCodeParam) {
     inviteCode.value = inviteCodeParam;
   }
 };
 
+// 页面初始化时获取URL参数
 onMounted(() => {
   initInviteCode();
+  validatePhone(); // 初始化验证手机号
 });
 
-// 禁用发送验证码按钮的判断逻辑
+// 验证手机号输入（实时）
 const validatePhoneInput = () => {
-  const phoneRegex = /^1[3-9]\d{9}$/;
-  isValidPhone.value = phoneRegex.test(phone.value);
+  if (phone.value.length === 0) {
+    document.getElementById('phoneErrorTip').style.display = 'none';
+  }
 };
 
-// 验证手机号是否合法
+// 验证手机号
 const validatePhone = () => {
-  if (!phone.value) return;
+  if (phone.value.length === 0) {
+    return;
+  }
 
-  const phoneRegex = /^1[3-9]\d{9}$/;
-  if (!phoneRegex.test(phone.value)) {
-    showPhoneErrorTip();
+  const phonePattern = new RegExp(/^1[3-9]\d{9}$/);
+  if (!phonePattern.test(phone.value)) {
+    document.getElementById('phoneErrorTip').style.display = 'block';
+    isValidPhone.value = false;
   } else {
-    hidePhoneErrorTip();
-  }
-};
-
-// 显示手机号错误提示
-const showPhoneErrorTip = () => {
-  const tipElement = document.getElementById('phoneErrorTip');
-  if (tipElement) {
-    tipElement.style.display = 'block';
-    tipElement.textContent = '手机号格式不正确';
-  }
-};
-
-// 隐藏手机号错误提示
-const hidePhoneErrorTip = () => {
-  const tipElement = document.getElementById('phoneErrorTip');
-  if (tipElement) {
-    tipElement.style.display = 'none';
-  }
-};
-
-// 验证验证码是否合法
-const validateCaptcha = () => {
-  if (!captcha.value) return;
-
-  const captchaRegex = /^\d{6}$/; // 假设验证码是6位数字
-  if (!captchaRegex.test(captcha.value)) {
-    showCaptchaErrorTip();
-  } else {
-    hideCaptchaErrorTip();
-    isValidCaptcha.value = true;
-  }
-};
-
-// 显示验证码错误提示
-const showCaptchaErrorTip = () => {
-  const tipElement = document.getElementById('captchaErrorTip');
-  if (tipElement) {
-    tipElement.style.display = 'block';
-    tipElement.textContent = '验证码格式不正确';
-  }
-};
-
-// 隐藏验证码错误提示
-const hideCaptchaErrorTip = () => {
-  const tipElement = document.getElementById('captchaErrorTip');
-  if (tipElement) {
-    tipElement.style.display = 'none';
+    document.getElementById('phoneErrorTip').style.display = 'none';
+    isValidPhone.value = true;
   }
 };
 
 // 发送验证码
-const sendCaptcha = () => {
+const sendCaptcha = async () => {
   if (isCountingDown.value) {
     return;
+  }
+  if (agreed.value === false) {
+    ElMessage.warning("请先阅读并同意使用协议和隐私政策");
+    return false;
+  }
+  if (phone.value.length <= 0) {
+    ElMessage.warning("请输入手机号");
+    return;
+  }
+
+  let data: CodeInputBody = {
+    phone: phone.value,
+    purpose: "login",
+  };
+  try {
+    const resp = await sendCode(data);
+    ElMessage.success(resp.data?.msg);
+  } catch (err) {
+    ElMessage.error("发送验证码失败");
   }
   isCountingDown.value = true;
   countdownSeconds.value = 60;
@@ -229,51 +205,6 @@ const sendCaptcha = () => {
   }, 1000);
 };
 
-// 点击登录按钮的处理函数
-const handleLogin = () => {
-  if (!agreed.value) {
-    ElMessage({
-      message: h("p", { style: "line-height: 1; font-size: 14px" }, [
-        h("span", null, "请先阅读并同意使用协议和隐私政策"),
-      ]),
-      type: "warning",
-    });
-    return;
-  }
-
-  if (!isValidPhone.value) {
-    ElMessage({
-      message: h("p", { style: "line-height: 1; font-size: 14px" }, [
-        h("span", null, "请输入正确的手机号"),
-      ]),
-      type: "warning",
-    });
-    validatePhone();
-    return;
-  }
-
-  if (!isValidCaptcha.value) {
-    validateCaptcha();
-    return;
-  }
-
-  // 验证验证码是否为12345
-  if (captcha.value === "12345") {
-    ElMessage({
-      message: "登录成功",
-      type: "success",
-    });
-    // 跳转到/Assistant页面
-    router.push('/Assistant');
-  } else {
-    ElMessage({
-      message: "验证码错误",
-      type: "error",
-    });
-  }
-};
-
-// 打开信息登记表单弹窗
 const openDialog = () => {
   dialogVisible.value = true;
 };
@@ -290,10 +221,68 @@ const showPrivacy = () => {
   agreementVisible.value = true;
 };
 
-// 信息登记表单提交
-const handleSubmit = (formData: any) => {
-  console.log("Form submitted:", formData);
-  // 这里可以添加表单提交的逻辑
+// 登录事件
+const loginEvent = async () => {
+  if (!loginValidate()) {
+    return;
+  }
+  try {
+    await login({
+      phone: phone.value,
+      verification_code: captcha.value,
+      invite_code: inviteCode.value || undefined,
+    });
+    ElMessage.success("登录成功");
+    // TODO：处理登录成功后的跳转等
+  } catch (err: any) {
+    loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
+  }
+};
+const loginValidate = () => {
+  if (agreed.value === false) {
+    ElMessage.warning("请先阅读并同意使用协议和隐私政策");
+    return false;
+  }
+  if (phone.value.length === 0) {
+    ElMessage.warning("请输入手机号码");
+    return false;
+  }
+
+  if (!isValidPhone.value) {
+    ElMessage.warning("手机号格式有误");
+    return false;
+  }
+
+  if (captcha.value.length === 0) {
+    ElMessage.warning("请输入验证码");
+    return false;
+  }
+  // 注册时需要邀请码
+  if (registerOk.value && inviteCode.value.length === 0) {
+    ElMessage.warning("请输入邀请码");
+    return false;
+  }
+  return true;
+};
+const loginErrorRespValidate = (code: number, message: string) => {
+  if (code === 1001) {
+    ElMessage.warning("邀请码无效");
+  } else if (code === 1002) {
+    ElMessage.warning("登录失败");
+  } else if (code === 1003) {
+    ElMessage.warning("令牌生成失败");
+  } else if (code === 1004) {
+    ElMessage.warning("用户创建失败");
+  } else if (code === 1005) {
+    ElMessage.warning("用户不存在");
+    registerOk.value = true;
+  } else if (code === 1006) {
+    ElMessage.warning("验证码已过期");
+  } else if (code === 1007) {
+    ElMessage.warning("验证码无效");
+  } else {
+    ElMessage.warning(message);
+  }
 };
 
 onUnmounted(() => {
@@ -429,6 +418,7 @@ onUnmounted(() => {
 
 .inviteCode-form {
   position: relative;
+  margin-left: 0.5rem;
   margin-bottom: 1rem;
 }
 
