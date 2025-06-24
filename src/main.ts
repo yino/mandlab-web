@@ -5,10 +5,18 @@ import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from './pages/Login.vue';
+import MLogin from './pages/MLogin.vue';
+import Application from './pages/Application.vue';
+import index from './pages/index.vue';
+import Assistant from './pages/Assistant.vue';
 
 const routes = [
   { path: '/login', component: Login },
   { path: '/', redirect: '/login' },
+    { path: '/MLogin', component: MLogin },
+    { path: '/index', component: index },
+    { path: '/Application', component: Application },
+      { path: '/Assistant', component: Assistant }
 ];
 const router = createRouter({
   history: createWebHistory(),
