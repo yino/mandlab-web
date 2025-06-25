@@ -8,8 +8,8 @@
       <div>
         <img src="/public/logo.png" class="logo" />
         <h1 class="login-title">Mandlab</h1>
-        <el-form style="padding: 1.6rem;">
-          <el-form-item class="inviteCode-form" >
+        <el-form style="padding: 1.6rem;" >
+          <el-form-item class="inviteCode-form" v-if="registerOk">
             <label class="input-label">邀请码</label>
             <el-input v-model="inviteCode" placeholder="请输入邀请码" />
             <div class="inviteCode-prompt">
@@ -62,14 +62,14 @@
                     type="primary"
                     @click="showAgreement"
                     :underline="false"
-                    style="margin-top: -0.3rem;"
+                    style="margin-top: -0.2rem;"
                   >使用协议</el-link>
                   和
                   <el-link
                     type="primary"
                     @click="showPrivacy"
                     :underline="false"
-                    style="margin-top: -0.3rem;"
+                    style="margin-top: -0.2rem;"
                   >隐私政策</el-link>
                 </span>
               </el-checkbox>
@@ -371,7 +371,7 @@ onUnmounted(() => {
 }
 
 .agreement-group {
-  margin-top: 8.1rem;
+  margin-top: 4.1rem;
   margin-left: -1.9rem;
 }
 
