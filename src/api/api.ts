@@ -142,7 +142,7 @@ export interface UploadFileInput {
 // ================= axios 实例 =================
 
 const api = axios.create({
-  baseURL: 'https://easygf-matcher-api-dev.nodebox.info/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
 });
 
