@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   visible: boolean;
@@ -19,8 +19,7 @@ const dialogTitle = computed(() => {
 
 // 计算属性：根据类型返回对应的内容
 const dialogContent = computed(() => {
-  const content =
-    props.type === "agreement" ? agreementContent : privacyContent;
+  const content = props.type === "agreement" ? agreementContent : privacyContent;
   return content.replace(/\n/g, "<br>");
 });
 

@@ -213,6 +213,7 @@ const loginEvent = async () => {
     });
     ElMessage.success("登录成功");
     // TODO：处理登录成功后的跳转等
+    window.location.href = "/chat";
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }

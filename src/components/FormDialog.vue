@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
-import { Upload } from "@element-plus/icons-vue";
+// import { Upload } from "@element-plus/icons-vue";
 import { applyInviteCode, uploadInviteFile } from "../api/api";
 const props = defineProps<{
   visible: boolean;
@@ -61,10 +61,10 @@ const handleSubmit = async () => {
       business_card_file_id: form.value.badge,
     });
     console.log("resp", resp);
-    ElMessage.success(resp.data.message);
+    ElMessage.success(resp.data.msg);
     // 处理成功逻辑
   } catch (err: any) {
-    ElMessage.error(err?.response?.data?.errors?.[0] || "申请失败");
+    ElMessage.error(err?.response?.data?.msg || "申请失败");
     return false;
   }
 };
