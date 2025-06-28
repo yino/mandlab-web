@@ -107,8 +107,8 @@ import AgreementDialog from "../components/agreement.vue";
 
 const inviteCode = ref("");
 const registerOk = ref(true);
-const phone = ref("15829090357");
-const captcha = ref("123456");
+const phone = ref("");
+const captcha = ref("");
 const agreed = ref(false);
 const dialogVisible = ref(false);
 const loginBtnTxt = ref("登录");
