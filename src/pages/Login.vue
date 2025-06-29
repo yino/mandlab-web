@@ -206,14 +206,15 @@ const loginEvent = async () => {
     return;
   }
   try {
-    await login({
+    const resp = await login({
       phone: phone.value,
       verification_code: captcha.value,
       invite_code: inviteCode.value || undefined,
     });
     ElMessage.success("登录成功");
+    console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
-    window.location.href = "/chat";
+    window.location.href = "/chat?token=" + resp?.data?.access_token;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
