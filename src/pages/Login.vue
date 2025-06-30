@@ -206,6 +206,8 @@ const loginEvent = async () => {
     return;
   }
   try {
+	  //跳转测试
+	  // window.location.href="http://localhost:3000/?token=123456"
     const resp = await login({
       phone: phone.value,
       verification_code: captcha.value,
@@ -214,7 +216,9 @@ const loginEvent = async () => {
     ElMessage.success("登录成功");
     console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
-    window.location.href = "/chat?token=" + resp?.data?.access_token;
+const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
+window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
+
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
