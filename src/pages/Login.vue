@@ -44,7 +44,9 @@
                       @click="sendCaptcha"
                     >
                       {{
-                        isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码"
+                        isCountingDown
+                          ? `重新发送(${countdownSeconds}s)`
+                          : "发送验证码"
                       }}
                     </el-button>
                   </el-col>
@@ -57,11 +59,17 @@
                   <el-checkbox v-model="agreed">
                     <span class="agreement-text">
                       已阅读并同意Mandlab
-                      <el-link type="primary" @click="showAgreement" :underline="false"
+                      <el-link
+                        type="primary"
+                        @click="showAgreement"
+                        :underline="false"
                         >使用协议</el-link
                       >
                       和
-                      <el-link type="primary" @click="showPrivacy" :underline="false"
+                      <el-link
+                        type="primary"
+                        @click="showPrivacy"
+                        :underline="false"
                         >隐私政策</el-link
                       >
                     </span>
@@ -206,8 +214,8 @@ const loginEvent = async () => {
     return;
   }
   try {
-	  //跳转测试
-	  // window.location.href="http://localhost:3000/?token=123456"
+    //跳转测试
+    // window.location.href="http://localhost:3000/?token=123456"
     const resp = await login({
       phone: phone.value,
       verification_code: captcha.value,
@@ -216,9 +224,8 @@ const loginEvent = async () => {
     ElMessage.success("登录成功");
     console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
-const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
-window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
-
+    const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
+    window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }

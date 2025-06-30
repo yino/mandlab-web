@@ -19,8 +19,10 @@ const routes = [
   { path: '/Assistant', component: Assistant },
 ]
 
+// 读取.env 配置
+const assetPrefix = import.meta.env.VITE_PUBLIC_PATH;
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(assetPrefix),
   routes,
 })
 
