@@ -140,6 +140,9 @@ const initInviteCode = () => {
   }
 };
 
+
+
+
 // 页面初始化时获取URL参数
 onMounted(() => {
   initInviteCode();
@@ -227,13 +230,18 @@ const loginEvent = async () => {
     return;
   }
   try {
-    await login({
-      phone: phone.value,
-      verification_code: captcha.value,
-      invite_code: inviteCode.value || undefined,
-    });
+	  //跳转测试
+	  // window.location.href="http://localhost:3000/?token=123456"
+   const resp = await login({
+     phone: phone.value,
+     verification_code: captcha.value,
+     invite_code: inviteCode.value || undefined,
+   });
     ElMessage.success("登录成功");
+    console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
+	const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
+	window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
