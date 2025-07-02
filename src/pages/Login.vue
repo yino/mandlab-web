@@ -10,7 +10,7 @@
         <div class="login-box">
           <div>
             <h1 class="login-title">Mandlab</h1>
-			   <div class="login-title2">绿色金融与垂直智能体</div>
+            <div class="login-title2">绿色金融与垂直智能体</div>
             <el-form>
               <el-form-item class="inviteCode-form" v-if="registerOk">
                 <label class="input-label">邀请码</label>
@@ -45,9 +45,7 @@
                       @click="sendCaptcha"
                     >
                       {{
-                        isCountingDown
-                          ? `重新发送(${countdownSeconds}s)`
-                          : "发送验证码"
+                        isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码"
                       }}
                     </el-button>
                   </el-col>
@@ -60,17 +58,11 @@
                   <el-checkbox v-model="agreed">
                     <span class="agreement-text">
                       已阅读并同意Mandlab
-                      <el-link
-                        type="primary"
-                        @click="showAgreement"
-                        :underline="false"
+                      <el-link type="primary" @click="showAgreement" :underline="false"
                         >使用协议</el-link
                       >
                       和
-                      <el-link
-                        type="primary"
-                        @click="showPrivacy"
-                        :underline="false"
+                      <el-link type="primary" @click="showPrivacy" :underline="false"
                         >隐私政策</el-link
                       >
                     </span>
@@ -224,9 +216,9 @@ const loginEvent = async () => {
     console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
     const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
-	//跳转测试
-	 window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
-    // window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
+    //跳转测试
+    //  window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
+    window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
@@ -387,7 +379,7 @@ onUnmounted(() => {
 
   font-weight: bolder;
   text-align: center;
-  
+
   margin-bottom: 0.7rem;
 }
 .input-label {
