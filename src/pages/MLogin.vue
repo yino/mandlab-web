@@ -8,6 +8,7 @@
       <div>
         <img src="/public/logo.png" class="logo" />
         <h1 class="login-title">Mandlab</h1>
+		<div class="login-title2">绿色金融与ESG垂直智能体</div>
         <el-form style="padding: 1.6rem;" >
           <el-form-item class="inviteCode-form" v-if="registerOk">
             <label class="input-label">邀请码</label>
@@ -230,8 +231,6 @@ const loginEvent = async () => {
     return;
   }
   try {
-	  //跳转测试
-	  // window.location.href="http://localhost:3000/?token=123456"
    const resp = await login({
      phone: phone.value,
      verification_code: captcha.value,
@@ -241,6 +240,8 @@ const loginEvent = async () => {
     console.log("resp", resp);
     // TODO：处理登录成功后的跳转等
 	const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
+	//跳转测试
+	 // window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
 	window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
@@ -333,15 +334,23 @@ onUnmounted(() => {
 .login-title {
   color: #3dbc79;
   font-size: 30rpx;
-  font-style: italic;
+ /* font-style: italic; */
   font-weight: bolder;
   text-align: center;
   margin-left: 0.5rem;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.1rem;
   margin-top: -0.5rem;
   margin-bottom: 0.7rem;
 }
+.login-title2 {
+  color: #3dbc79;
+  font-size: 1rem;
 
+  font-weight: bolder;
+  text-align: center;
+
+  margin-bottom: 0.7rem;
+}
 .input-label {
   margin-top: 1rem;
   font-size: 1rem;
