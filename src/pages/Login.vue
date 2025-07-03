@@ -10,7 +10,7 @@
         <div class="login-box">
           <div>
             <h1 class="login-title">Mandlab</h1>
-            <div class="login-title2">绿色金融与垂直智能体</div>
+            <div class="login-title2">绿色金融与ESG垂直智能体</div>
             <el-form>
               <el-form-item class="inviteCode-form" v-if="registerOk">
                 <label class="input-label">邀请码</label>
@@ -217,7 +217,7 @@ const loginEvent = async () => {
     // TODO：处理登录成功后的跳转等
     const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
     //跳转测试
-    //  window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
+     // window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
     window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
