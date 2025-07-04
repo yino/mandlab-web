@@ -59,7 +59,7 @@
                     <span class="agreement-text">
                       已阅读并同意Mandlab
                       <el-link type="primary" @click="showAgreement" :underline="false"
-                        >使用协议</el-link
+                        >服务协议</el-link
                       >
                       和
                       <el-link type="primary" @click="showPrivacy" :underline="false"
