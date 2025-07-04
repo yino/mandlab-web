@@ -64,7 +64,7 @@
                     @click="showAgreement"
                     :underline="false"
                     style="margin-top: -0.2rem;"
-                  >使用协议</el-link>
+                  >服务协议</el-link>
                   和
                   <el-link
                     type="primary"
@@ -241,8 +241,8 @@ const loginEvent = async () => {
     // TODO：处理登录成功后的跳转等
 	const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
 	//跳转测试
-	 // window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
-	window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
+	 window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
+	// window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
