@@ -241,8 +241,8 @@ const loginEvent = async () => {
     // TODO：处理登录成功后的跳转等
 	const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
 	//跳转测试
-	 window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
-	// window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
+	 // window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
+	window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
