@@ -48,7 +48,7 @@ const agreementContent = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MandLab平台服务协议</title>
     <style>
-        body {
+        #agreement-body body {
             font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #333;
@@ -56,7 +56,7 @@ const agreementContent = `
             padding: 10px;
             background-color: #f9f9f9;
         }
-        .container {
+        #agreement-body .container {
             background-color: white;
             padding: 15px;
             border-radius: 8px;
@@ -65,11 +65,11 @@ const agreementContent = `
             max-width: calc(100% - 20px);
         }
         @media (max-width: 600px) {
-            .container {
+            #agreement-body .container {
                 padding: 10px;
             }
         }
-        h1 {
+        #agreement-body h1 {
             text-align: center;
             color: #2c3e50;
             font-size: 28px;
@@ -77,7 +77,7 @@ const agreementContent = `
             border-bottom: 3px solid #3498db;
             padding-bottom: 15px;
         }
-        .header-info {
+        #agreement-body .header-info {
             text-align: center;
             color: #7f8c8d;
             font-size: 14px;
@@ -86,14 +86,14 @@ const agreementContent = `
             background-color: #ecf0f1;
             border-radius: 5px;
         }
-        .intro {
+        #agreement-body .intro {
             background-color: #f8f9fa;
             padding: 20px;
             border-left: 4px solid #3498db;
             margin-bottom: 30px;
             border-radius: 0 5px 5px 0;
         }
-        h2 {
+        #agreement-body h2 {
             color: #2c3e50;
             font-size: 20px;
             margin-top: 30px;
@@ -101,65 +101,97 @@ const agreementContent = `
             padding-bottom: 8px;
             border-bottom: 2px solid #bdc3c7;
         }
-        h3 {
+        #agreement-body h3 {
             color: #34495e;
             font-size: 16px;
             margin-top: 20px;
             margin-bottom: 10px;
             font-weight: 600;
         }
-        p {
+        #agreement-body p {
             margin-bottom: 12px;
             text-align: justify;
         }
-        ul, ol {
+        #agreement-body ul, #agreement-body ol {
             margin-bottom: 15px;
             padding-left: 25px;
         }
-        li {
+        #agreement-body li {
             margin-bottom: 8px;
         }
-        .highlight {
+        #agreement-body .highlight {
             background-color: #fff3cd;
             padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
+            border-radius: 6px;
             margin: 15px 0;
+            border-left: 4px solid #ffc107;
         }
-        .contact-info {
-            background-color: #e8f5e8;
-            padding: 20px;
-            border-radius: 5px;
-            margin-top: 30px;
-        }
-        .contact-info h3 {
-            color: #27ae60;
-            margin-top: 0;
-        }
-        .contact-item {
-            margin-bottom: 10px;
-        }
-        .contact-label {
-            font-weight: bold;
-            color: #2c3e50;
+        .highlight strong {
+            color: #856404;
         }
         .section {
-            margin-bottom: 25px;
+            margin: 30px 0;
         }
         .subsection {
-            margin-bottom: 15px;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        .contact-info {
+            background-color: #d4edda;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .contact-info h3 {
+            margin-top: 0;
+            color: #155724;
+        }
+        .contact-info p {
+            margin: 8px 0;
+        }
+        .contact-info strong {
+            color: #155724;
+        }
+        .contact-info ul, #agreement-body ol {
+            margin: 12px 0;
+            padding-left: 30px;
+        }
+        .contact-info li {
+            margin: 8px 0;
         }
         .important {
             font-weight: bold;
             color: #e74c3c;
         }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #7f8c8d;
-            font-size: 12px;
+        .note {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #6c757d;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            #agreement-body body {
+                padding: 10px;
+            }
+            
+            #agreement-body .container {
+                padding: 20px;
+            }
+            
+            #agreement-body h1 {
+                font-size: 24px;
+            }
+            
+            #agreement-body h2 {
+                font-size: 20px;
+            }
+            
+            #agreement-body h3 {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -422,7 +454,7 @@ const agreementContent = `
             
             <div class="subsection">
                 <h3>8.1</h3>
-                <p>您理解并同意，MandLab有权根据您的具体行为做出独立判断，在认为您使用MandLab服务过程中存在违反法律法规或本协议规定的一项或多项情形时，可立即暂停或终止对您提供部分或全部服务，并对您采取包括冻结、注销、删除帐号，删除或屏蔽相关违规信息、服务评价等具体措施。除此之外，如因您的违规、违约行为导致MandLab或其他第三方的权益受到损害的，您需承担全部赔偿责任（包括但不限于财产损害赔偿、名誉损害赔偿以及交通费、律师费、调查取证费、诉讼费、财产保全费、执行费等），并支付不低于您就违规、违约行为所获的不当利益数额的违约金。</p>
+                <p>您理解并同意，MandLab有权根据您的具体行为做出独立判断，在认为您使用MandLab服务过程中存在违反法律法规或本协议规定的一项或多项情形时，可立即暂停或终止对您提供部分或全部服务，并对您采取包括冻结、注销、删除帐号，删除或屏蔽相关违规信息、服务评价等具体措施。除此之外，如因您的违规、违约行为导致MandLab或其他第三方的权益受到损害的，您需承担全部赔偿责任（包括但不限于财产损害赔偿责任、名誉损害赔偿责任以及交通费、律师费、调查取证费、诉讼费、财产保全费、执行费等），并支付不低于您就违规、违约行为所获的不当利益数额的违约金。</p>
             </div>
 
             <div class="subsection">
@@ -482,7 +514,7 @@ const agreementContent = `
 
             <div class="subsection">
                 <h3>9.7</h3>
-                <p>您理解并同意，在法律允许的范围内，MandLab不就您遭受的任何利润损失（无论直接或间接产生）、商誉损失、机会损失、数据丢失、其他间接或附带损失以及因您自身过错或原因导致的损失承担赔偿责任。任何MandLab需承担的损失赔偿责任的金额以过去12个月您或您相应的企业用户向MandLab支付的金额为限。</p>
+                <p>您理解并同意，在法律允许的范围内，MandLab不就您遭受的任何利润损失（无论直接或间接产生）、商誉损失、机会损失、数据丢失、其他间接或附带损失以及因您自身过错或原因导致的损失赔偿责任承担赔偿。任何MandLab需承担的损失赔偿责任的金额以过去12个月您或您相应的企业用户向MandLab支付的金额为限。</p>
             </div>
 
             <div class="subsection">
@@ -804,7 +836,7 @@ const privacyContent = `
         }
     </style>
 </head>
-<body>
+<body id="body">
     <div class="container">
         <h1>个人信息保护及隐私政策</h1>
         
@@ -1022,7 +1054,7 @@ const privacyContent = `
                 
                 <p>（五）互联网并非绝对安全的环境，使用MandLab平台服务时，我们强烈建议您不要使用非MandLab平台推荐的通信方式发送您的信息。您可以通过我们的服务建立联系和相互分享。当您通过我们的服务创建交流、交易或分享时，您可以自主选择沟通、交易或分享的对象，作为能够看到您的交易内容、联络方式、交流信息或分享内容等相关信息的第三方。</p>
                 <p>在使用MandLab平台服务时，请您妥善保护自己的个人信息，仅在必要的情形下向他人提供。如您发现自己的个人信息尤其是您的账户或密码发生泄露，请您立即联络MandLab平台安全服务中心，以便我们根据您的申请采取相应措施。</p>
-                <p>请注意，您在使用我们服务时自愿共享甚至公开分享的信息，可能会涉及您或他人的个人信息甚至个人敏感信息。请您更加谨慎地考虑，是否在使用我们的服务时共享甚至公开分享相关信息。</p>
+                <p>请注意，您在使用我们服务时自愿共享 even 公开分享的信息，可能会涉及您或他人的个人信息甚至个人敏感信息。请您更加谨慎地考虑，是否在使用我们的服务时共享 even 公开分享相关信息。</p>
                 <p>请使用复杂密码，协助我们保证您的账号安全。我们将尽力保障您发送给我们的任何信息的安全性。如果我们的物理、技术或管理防护设施遭到破坏，导致信息被非授权访问、公开披露、篡改或毁坏，导致您的合法权益受损，我们将承担相应的法律责任。</p>
                 
                 <p>（六）我们将不定期更新并公开安全风险、个人信息安全影响评估报告等有关内容，您可通过MandLab平台公告方式获得。</p>
