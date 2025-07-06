@@ -3,7 +3,7 @@
     <!-- 顶部导航栏 -->
     <div class="header">
       <div class="more-icon">⋯</div>
-      <div class="title">ESG助手-mandlab</div>
+      <div class="title">MandLab研以致用</div>
       <div class="add-icon">+</div>
     </div>
 
