@@ -17,10 +17,40 @@ const dialogTitle = computed(() => {
   return props.type === "agreement" ? "使用协议" : "隐私政策";
 });
 
+import { ref, onMounted } from "vue";
+
+// 响应式数据存储文件内容
+const fileContent = ref("");
+
+// 根据类型加载对应的HTML文件
+const loadFileContent = async () => {
+  try {
+    const fileName = props.type === "agreement" ? "agreement.html" : "privacy.html";
+    const response = await fetch(`/web/src/assets/${fileName}`);
+    console.log(response);
+    if (response.ok) {
+      fileContent.value = await response.text();
+    } else {
+      // 如果文件不存在，使用默认内容
+      fileContent.value = props.type === "agreement" ? agreementContent : privacyContent;
+    }
+  } catch (error) {
+    console.error("加载文件失败:", error);
+    // 出错时使用默认内容
+    fileContent.value = props.type === "agreement" ? agreementContent : privacyContent;
+  }
+};
+
+// 监听类型变化，重新加载文件
+onMounted(() => {
+  loadFileContent();
+});
+
 // 计算属性：根据类型返回对应的内容
 const dialogContent = computed(() => {
-  const content = props.type === "agreement" ? agreementContent : privacyContent;
-  return content.replace(/\n/g, "<br>");
+  return (
+    fileContent.value || (props.type === "agreement" ? agreementContent : privacyContent)
+  );
 });
 
 // 使用协议内容
