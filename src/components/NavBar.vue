@@ -2,7 +2,7 @@
   <div class="nav-bar">
     <div class="close-btn" @click="handleClose">×</div>
     <div class="title">MandLab研以致用</div>
-    <div class="menu-btn" @click="handleMenuToggle">⋯</div>
+    <div class="menu-btn" @click="handleMenuToggle"></div>
   </div>
 </template>
 
