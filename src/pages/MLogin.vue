@@ -154,15 +154,12 @@ const initInviteCode = () => {
 const initExchangeCode = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const exchangeCode = urlParams.get("exchange_code");
-  console.log("exchangeCode", exchangeCode);
   if (!exchangeCode) {
     return;
   }
   try {
-    const resp = await loginByExchangeCode(exchangeCode).then((resp) => {
-      console.log("resp", resp);
-      jumpChat(resp.data.access_token);
-    });
+    const resp = await loginByExchangeCode(exchangeCode);
+    jumpChat(resp?.data?.access_token);
   } catch (err) {
     ElMessage.error("交换码无效");
   }
