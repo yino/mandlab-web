@@ -54,8 +54,10 @@ const handleSubmit = async () => {
       email: "12345678@123.com",
     });
     ElMessage.success(resp.data.msg);
+	 emit("update:visible", false);
   } catch (err: any) {
     ElMessage.error(err?.response?.data?.msg || "申请失败");
+	 emit("update:visible", false);
     return false;
   }
 };
