@@ -1,6 +1,6 @@
 <template>
-  <div> 
-    <div style="margin-left: -0.5rem;margin-top: -0.5rem;">
+  <div>
+    <div style="margin-left: -0.5rem; margin-top: -0.5rem">
       <NavBar />
     </div>
 
@@ -8,29 +8,42 @@
       <div>
         <img src="/public/logo.png" class="logo" />
         <h1 class="login-title">Mandlab</h1>
-		<div class="login-title2">绿色金融与ESG垂直智能体</div>
-        <el-form style="padding: 1.6rem;" >
+        <div class="login-title2">绿色金融与ESG垂直智能体</div>
+        <el-form style="padding: 1.6rem">
           <el-form-item class="inviteCode-form" v-if="registerOk">
             <label class="input-label">邀请码</label>
             <el-input v-model="inviteCode" placeholder="请输入邀请码" />
             <div class="inviteCode-prompt">
               没有邀请码？
-              <el-link type="primary" @click="openDialog" :underline="false">马上获取</el-link>
+              <el-link type="primary" @click="openDialog" :underline="false"
+                >马上获取</el-link
+              >
             </div>
           </el-form-item>
           <div></div>
-          
-          <el-form-item style="margin-left: 0.5rem;">
+
+          <el-form-item style="margin-left: 0.5rem">
             <label class="input-label">手机号码</label>
             <div id="phoneErrorTip" class="phone-error-tip">手机号格式有误</div>
-            <el-input v-model="phone" placeholder="请输入手机号码" @blur="validatePhone" @input="validatePhoneInput" />
-            <div :class="['captcha-btn-container', { disabled: !isValidPhone }]" style="margin-top: 1rem;">
-            </div>
+            <el-input
+              v-model="phone"
+              placeholder="请输入手机号码"
+              @blur="validatePhone"
+              @input="validatePhoneInput"
+            />
+            <div
+              :class="['captcha-btn-container', { disabled: !isValidPhone }]"
+              style="margin-top: 1rem"
+            ></div>
           </el-form-item>
 
-          <el-form-item class="captcha-row-form" style="margin-left: 0.5rem;">
+          <el-form-item class="captcha-row-form" style="margin-left: 0.5rem">
             <p class="input-label">验证码</p>
-            <div id="captchaErrorTip" class="phone-error-tip" style="margin-left: -8rem;"></div>
+            <div
+              id="captchaErrorTip"
+              class="phone-error-tip"
+              style="margin-left: -8rem"
+            ></div>
             <el-row :gutter="28" class="captcha-row-form-item">
               <el-col :span="18">
                 <el-input v-model="captcha" placeholder="请输入验证码" />
@@ -43,11 +56,7 @@
                   :disabled="isCountingDown || !isValidPhone"
                   @click="sendCaptcha"
                 >
-                  {{
-                    isCountingDown
-                      ? `重新发送(${countdownSeconds}s)`
-                      : "发送验证码"
-                  }}
+                  {{ isCountingDown ? `重新发送(${countdownSeconds}s)` : "发送验证码" }}
                 </el-button>
               </el-col>
             </el-row>
@@ -63,22 +72,24 @@
                     type="primary"
                     @click="showAgreement"
                     :underline="false"
-                    style="margin-top: -0.2rem;"
-                  >服务协议</el-link>
+                    style="margin-top: -0.2rem"
+                    >服务协议</el-link
+                  >
                   和
                   <el-link
                     type="primary"
                     @click="showPrivacy"
                     :underline="false"
-                    style="margin-top: -0.2rem;"
-                  >隐私政策</el-link>
+                    style="margin-top: -0.2rem"
+                    >隐私政策</el-link
+                  >
                 </span>
               </el-checkbox>
             </el-col>
           </el-form-item>
 
           <el-button class="login-btn" type="success" size="medium" @click="loginEvent">
-            {{loginBtnTxt}}
+            {{ loginBtnTxt }}
           </el-button>
         </el-form>
       </div>
@@ -95,12 +106,12 @@
 
 <script setup lang="ts">
 import { ref, onUnmounted, onMounted } from "vue";
-import { login, sendCode, CodeInputBody } from "../api/api";
+import { login, sendCode, CodeInputBody, loginByExchangeCode } from "../api/api";
 import { ElMessage } from "element-plus";
 
 // 页面组件相关
 import FormDialog from "../components/MFormDialog.vue";
-import NavBar from"../components/NavBar.vue"
+import NavBar from "../components/NavBar.vue";
 import AgreementDialog from "../components/Magreement.vue";
 
 const inviteCode = ref("");
@@ -140,12 +151,26 @@ const initInviteCode = () => {
     inviteCode.value = inviteCodeParam;
   }
 };
-
-
-
+const initExchangeCode = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const exchangeCode = urlParams.get("exchange_code");
+  console.log("exchangeCode", exchangeCode);
+  if (!exchangeCode) {
+    return;
+  }
+  try {
+    const resp = await loginByExchangeCode(exchangeCode).then((resp) => {
+      console.log("resp", resp);
+      jumpChat(resp.data.access_token);
+    });
+  } catch (err) {
+    ElMessage.error("交换码无效");
+  }
+};
 
 // 页面初始化时获取URL参数
 onMounted(() => {
+  initExchangeCode();
   initInviteCode();
   validatePhone(); // 初始化验证手机号
 });
@@ -153,7 +178,7 @@ onMounted(() => {
 // 验证手机号输入（实时）
 const validatePhoneInput = () => {
   if (phone.value.length === 0) {
-    document.getElementById('phoneErrorTip').style.display = 'none';
+    document.getElementById("phoneErrorTip").style.display = "none";
   }
 };
 
@@ -165,10 +190,10 @@ const validatePhone = () => {
 
   const phonePattern = new RegExp(/^1[3-9]\d{9}$/);
   if (!phonePattern.test(phone.value)) {
-    document.getElementById('phoneErrorTip').style.display = 'block';
+    document.getElementById("phoneErrorTip").style.display = "block";
     isValidPhone.value = false;
   } else {
-    document.getElementById('phoneErrorTip').style.display = 'none';
+    document.getElementById("phoneErrorTip").style.display = "none";
     isValidPhone.value = true;
   }
 };
@@ -231,21 +256,21 @@ const loginEvent = async () => {
     return;
   }
   try {
-   const resp = await login({
-     phone: phone.value,
-     verification_code: captcha.value,
-     invite_code: inviteCode.value || undefined,
-   });
+    const resp = await login({
+      phone: phone.value,
+      verification_code: captcha.value,
+      invite_code: inviteCode.value || undefined,
+    });
     ElMessage.success("登录成功");
     console.log("resp", resp);
-    // TODO：处理登录成功后的跳转等
-	const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
-	//跳转测试
-	 // window.location.href = `http://localhost:3000/?token=${resp.data.access_token}`;
-	window.location.href = `${chatUrl}?token=${resp.data.access_token}`;
+    jumpChat(resp.data.access_token);
   } catch (err: any) {
     loginErrorRespValidate(err?.response?.data?.code, err?.response?.data?.msg);
   }
+};
+const jumpChat = (token: string) => {
+  const chatUrl = import.meta.env.VITE_VUE_APP_CHAT_URL;
+  window.location.href = `${chatUrl}?token=${token}`;
 };
 const loginValidate = () => {
   if (agreed.value === false) {
@@ -328,13 +353,13 @@ onUnmounted(() => {
 
 .logo {
   width: 7rem;
-  margin-left: 8.0rem;
+  margin-left: 8rem;
 }
 
 .login-title {
   color: #3dbc79;
   font-size: 30rpx;
- /* font-style: italic; */
+  /* font-style: italic; */
   font-weight: bolder;
   text-align: center;
   margin-left: 0.5rem;

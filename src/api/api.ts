@@ -223,4 +223,10 @@ export function uploadInviteFile(data: UploadFileInput) {
   });
 }
 
+export function loginByExchangeCode(exchangeCode: string) {
+  return api.post<LoginOutputBody>(`/v1/auth/login:exchange`, {
+    exchange_code: exchangeCode,
+  });
+}
+
 // ... 其他接口可按需补充 ...
