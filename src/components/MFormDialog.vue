@@ -20,7 +20,7 @@ const form = ref({
   badge: "",
 });
 
-const phoneLabel = ref("联系电话 <small>(邀请码将以短信发送到您的手机)</small>");
+const phoneLabel = ref("联系电话 <small>(邀请码将以短信的形式发送到您的手机)</small>");
 const cardLabel = ref("名片<small>(提供名片我们会优先审核哦)</small>");
 
 const rules: FormRules = {
@@ -54,8 +54,10 @@ const handleSubmit = async () => {
       email: "12345678@123.com",
     });
     ElMessage.success(resp.data.msg);
+	 emit("update:visible", false);
   } catch (err: any) {
     ElMessage.error(err?.response?.data?.msg || "申请失败");
+	 emit("update:visible", false);
     return false;
   }
 };
@@ -93,7 +95,7 @@ const handleFileChange = async (file: any) => {
   <el-dialog
     :model-value="visible"
     @close="handleClose"
-    width="320px"
+    width="350px"
     class="form-dialog"
   >
     <template #title>
@@ -166,7 +168,7 @@ const handleFileChange = async (file: any) => {
 }
 
 .form-body {
-  padding: 10px;
+  padding: 20px;
 }
 
 .el-form-item {
